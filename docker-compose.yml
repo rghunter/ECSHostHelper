@@ -1,0 +1,10 @@
+version: '2'
+services:
+  dns-helper:
+    build: .
+    ports:
+            - "8125:8125"
+    volumes:
+     - ~/.aws:/root/.aws
+     - ./:/code/
+
