@@ -1,25 +1,33 @@
 import requests
 import boto3
+import os
+import requests
+
+zone_id = os.environ['ZONE_ID']
+record = os.environ['RECORD']
+ttl = os.environ.get('TTL', 180)
 
 client = boto3.client('route53')
-hosted_zone = "ZYIQ07YV68SXE"
 
+
+def get_local_ip():
+    return requests.get('http://169.254.169.254/latest/meta-data/local-ipv4'
 
 
 response = client.change_resource_record_sets(
-    HostedZoneId=hosted_zone,
+    HostedZoneId=zone_id,
     ChangeBatch={
         "Comment": "Automatic DNS update",
         "Changes": [
             {
                 "Action": "UPSERT",
                 "ResourceRecordSet": {
-                    "Name": "statsd.ryanhunter.co",
-                    "Type": "CNAME",
-                    "TTL": 180,
+                    "Name": record,
+                    "Type": "A",
+                    "TTL": ttl,
                     "ResourceRecords": [
                         {
-                            "Value": "test.cens.io"
+                            "Value": get_local_ip()
                         },
                     ],
                 }
